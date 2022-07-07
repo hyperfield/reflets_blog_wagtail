@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load comments %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-blogindexpage{% endblock %}
+
+{% block content %}
+    {% comment %} <h1>{{ page.title }}</h1> {% endcomment %}
+
+    <div class="intro">{{ page.intro|richtext }}</div>
+
+    {% for post in blogpages %}
+    {% with post=post.specific %}
+    <div class="box1">
+        <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+        {% if post.author.first_name or post.author.last_name %}
+        <span>By {{ post.author.first_name }} {{ post.author.last_name }} on {{ post.date }}</span>
+        {% else %}
+        <span>By {{ post.author }} on {{ post.date }}</span>
+        {% endif %}
+        {% comment %} {% if post.main_image %}
+        <div class="box1_img">
+            {% image post.main_image max-280x190 %}
+        </div>
+        {% endif %} {% endcomment %}
+        <div class="data">
+            <p>{{ post.intro }}</p>
+            <div class="clearfix">
+            {% if post.main_image %}
+            <div class="box1_img">
+                {% image post.main_image max-280x190 %}
+            </div>
+            {% endif %}
+            {{ post.body|richtext|truncatewords:100 }}
+            </div>
+            <h3><a href="{% pageurl post %}">Read on >></a></h3>
+        </div>
+        <div class="clear"></div>
+        {% get_comment_count for post as comment_count %}
+        <p>
+        {% if comment_count %}
+            &sdot;&nbsp;{{ comment_count }} comment{{ comment_count|pluralize }}
+        {% endif %}
+        </p>
+    </div>
+    {% endwith %}
+    {% endfor %}
+
+{% endblock %}

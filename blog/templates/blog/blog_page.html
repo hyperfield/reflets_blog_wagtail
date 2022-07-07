@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load comments comments_xtd %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load hitcount_tags %}
+
+{% block body_class %}template-blogpage{% endblock %}
+
+{% block content %}
+<div class="box1">
+  <h2>{{ page.title }}</h2>
+  {% if page.author.first_name or page.author.last_name %}
+    <span class="meta">By {{ page.author.first_name }} {{ page.author.last_name }} on {{ page.date }}</span>
+  {% else %}
+    <span class="meta">By {{ page.author}} on {{ page.date }}</span>
+  {% endif %}
+
+  <div>
+    {% with categories=page.categories.all %}
+    {% if categories %}
+      <h3>Posted in these categories:
+      {% for category in categories %}
+        {% image category.icon fill-32x32 %}
+        {{ category.name }}{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+    </h3>
+  </div>
+
+ <div class="intro">{{ page.intro }}</div>
+
+ <div class="clearfix">
+  <div class="box1_img">
+  {% for item in page.gallery_images.all %}
+    {% image item.image max-320x240 %}
+    <p>{{ item.caption }}</p>
+  {% endfor %}
+  </div>
+
+ <p>{{ page.body|richtext }}</p>
+
+ {% comment %} <div class="top_img"> {% endcomment %}
+ {% comment %} </div>    {% endcomment %}
+</div>
+ <div class="data_desc">
+  {% if page.tags.all.count %}
+    <div class="tags">
+      <h3>Tags</h3>
+      {% for tag in page.tags.all %}
+        <a href="{% slugurl 'tags' %}?tag={{ tag }}"><button type="button">{{ tag }}</button></a>
+      {% endfor %}
+    </div>
+  {% endif %}
+ </div>
+
+ {% get_comment_count for page as comment_count %}
+ <div class="py-4 text-center">
+   {% comment %} <a href="{% url 'blog:post-list' %}">Back to the post list</a> {% endcomment %}
+   &nbsp;&sdot;&nbsp;
+   {{ comment_count }} comment{{ comment_count|pluralize }}
+   ha{{ comment_count|pluralize:"s,ve" }} been posted.
+ </div>
+
+ <hr/>
+
+ <div style="display: flex; justify-content: flex-end">
+  <h2><a href="{{ page.get_parent.url }}">Return to blog</a></h2>
+ </div>
+&nbsp;
+{% if page.allow_comments %}
+<div class="card card-block" style="width: 80%; margin: 0 auto; float: none; margin-bottom: 10px;">
+  <div class="card-body">
+    <h4 class="card-title text-center pb-3">Post your comment</h4>
+      {% render_comment_form for page %}
+  </div>
+</div>
+&nbsp;
+{% endif %}
+
+<hr/>
+
+{% if comment_count %}
+<div class="media-list">
+  {% render_xtdcomment_tree for page %}
+</div>
+{% endif %}
+
+</div>
+
+{% endblock %}
