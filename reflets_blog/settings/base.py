@@ -216,3 +216,5 @@ COMMENTS_XTD_FROM_EMAIL = "noreply@blog.quicknode.net"
 # Contact mail address to show in messages.
 COMMENTS_XTD_CONTACT_EMAIL = "reflets@blog.quicknode.net"
 # COMMENTS_XTD_MODEL = "cms.models.CustomComment"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

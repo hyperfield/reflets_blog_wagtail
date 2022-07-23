@@ -18,7 +18,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		{% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
 		{% endblock %}
 	</title>
-
+	<link rel="shortcut icon" type="image/jpg" href="{% static 'images/favicon.png' %}">
 	<link 
 		rel="stylesheet" 
 		href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" 
@@ -86,12 +86,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			    	<li><a href="{% slugurl 'blog' %}">HOME</a></li>
 			    	<li><a href="#">ABOUT</a></li>
 			    	<li><a href="{% slugurl 'tags' %}">TAGS</a></li>
-			    	<li><a href="{% slugurl 'categories' %}">CATEGORIES</a></li>
+			    	<li><a href="#">CATEGORIES</a></li>
 			    	<li><a href="#">CONTACT</a></li>
 			    </ul>
 			</div>
 			<div class="search_box">
-			    <form>
+			    <form role="search" method="get" class="form-search" action="{% url 'search' %}">
 			    <input type="text" value="Search" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}"><input type="submit" value="">
 			    </form>
 			</div>
@@ -130,16 +130,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div> {% endcomment %}
 	<div class="side_bottom">
 	    <h2>Most viewed posts</h2>
-		{% comment %} <div class="list2">
-		    <ul>
-			  <li><a href="#">Lorem ipsum dolor desktop publishing</a></li>
-			  <li><a href="#">Lorem ipsum dolor desktop publishing</a></li>
-			  <li><a href="#">Lorem ipsum dolor desktop publishing</a></li>
-			  <li><a href="#">Lorem ipsum dolor desktop publishing</a></li>
-			  <li><a href="#">Lorem ipsum dolor desktop publishing</a></li>
-			  <li><a href="#">Lorem ipsum dolor desktop publishing</a></li>
+			&nbsp;
+		<div class="list2">
+			<ul>
+			{% for most_viewed_page in most_viewed_pages %}
+				<li><a href="{% pageurl most_viewed_page %}">{{ most_viewed_page.title }}
+					(by {{ most_viewed_page.author }})
+				</a></li>
+    	{% endfor %}
 			</ul>
-		</div> {% endcomment %}
+		</div>
 	</div>
 	</div>
 	<div class="clear"></div>
@@ -158,9 +158,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<h3>Navigate</h3>
 				<div class="f_menu">
 					<ul>
-				       <li><a href="/">Home</a></li>
+				       <li><a href="{% slugurl 'blog' %}">Home</a></li>
 				       <li><a href="#">About this blog</a></li>
-				       <li><a href="/tags/">See tags</a></li>
+				       <li><a href="{% slugurl 'tags' %}">See tags</a></li>
 				       <li><a href="#">See categories</a></li>
 				       <li><a href="#">Contact</a></li>
 				   </ul>
@@ -180,11 +180,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		    </ul>
 		</div>
 	</div> {% endcomment %}
+	<div class="clear"></div>
 	</div>
-<div class="clear"></div>
-</div>
 	<div class="f_bottom">
 		<p>© 2022 The Reflets blog. All Rights Reserved | Design by<a href="http://w3layouts.com/"> W3Layouts</a></p>
 	</div>
+	</div>
+
+
 </body>
 </html>

@@ -24,11 +24,14 @@ class BlogIndexPage(Page):
     ]
 
     def get_context(self, request, *args, **kwargs):
-        # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request, *args, **kwargs)
-        blogpages = BlogPage.objects.live().public().order_by('-first_published_at')
-        # self.get_children().live().order_by('-first_published_at')
+        blogpages = BlogPage.objects.live().public().\
+            order_by('-first_published_at')
+        most_viewed_pages = BlogPage.objects.live().public().\
+            order_by('hit_count_generic')
         context['blogpages'] = blogpages
+        # Look up at sieve blog optimization
+        context['most_viewed_pages'] = most_viewed_pages[:5]
         return context
 
 
@@ -66,6 +69,8 @@ class BlogPage(Page, HitCountMixin):
     search_fields = Page.search_fields + [
         index.SearchField('intro'),
         index.SearchField('body'),
+        index.FilterField('date'),
+        index.FilterField('tags'),
     ]
 
     content_panels = Page.content_panels + [
@@ -79,6 +84,13 @@ class BlogPage(Page, HitCountMixin):
       FieldPanel('body'),
       InlinePanel('gallery_images', label="Gallery images"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        most_viewed_pages = BlogPage.objects.live().public().\
+            order_by('hit_count_generic')
+        context = super().get_context(request, *args, **kwargs)
+        context['most_viewed_pages'] = most_viewed_pages[:5]
+        return context
 
 
 class BlogPageGalleryImage(Orderable):
